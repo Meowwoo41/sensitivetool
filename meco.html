@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensitive Words Highlighter</title>
+</head>
+<body>
+  <div>
+    <textarea id="input" placeholder="輸入文字..." rows="10" cols="50"></textarea>
+    <button onclick="checkText()">執行</button>
+  </div>
+  <div>
+    <h3>結果：</h3>
+    <div id="output" style="border: 1px solid #ccc; padding: 10px;"></div>
+  </div>
+
+  <script>
+    // 定義敏感字庫
+    let sensitiveWords = [];
+
+    // 從 GitHub 加載 CSV 文件
+    const githubCsvUrl = "https://meowwoo41.github.io/sensitivetool/KeywordDatabase.csv";
+
+    async function loadSensitiveWords() {
+      try {
+        const response = await fetch(githubCsvUrl);
+        if (!response.ok) throw new Error("無法載入敏感字資料庫");
+        const csvText = await response.text();
+
+        // 處理 CSV 文件內容，按行分割並去除空白
+        sensitiveWords = csvText.split('\n')
+          .map(line => line.trim().toLowerCase()) // 去除空白並轉為小寫
+          .filter(word => word); // 過濾空行
+
+        console.log("敏感字資料庫載入成功，共有 " + sensitiveWords.length + " 條敏感字！");
+      } catch (error) {
+        console.error("錯誤：", error);
+      }
+    }
+
+    // 初始化載入敏感字
+    loadSensitiveWords();
+
+    // 檢查輸入文字中的敏感字
+    function checkText() {
+      const inputText = document.getElementById("input").value.toLowerCase(); // 輸入文字轉小寫
+      const outputDiv = document.getElementById("output");
+
+      if (sensitiveWords.length === 0) {
+        alert("敏感字資料庫尚未載入完成！");
+        return;
+      }
+
+      let highlightedText = inputText;
+
+      // 遍歷敏感字進行替換
+      sensitiveWords.forEach(word => {
+        const regex = new RegExp(`(${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')})`, "gi");
+        highlightedText = highlightedText.replace(
+          regex,
+          `<b style="color: red; text-decoration: line-through;">$1</b>`
+        );
+      });
+
+      // 顯示結果
+      outputDiv.innerHTML = highlightedText;
+    }
+  </script>
+</body>
+</html>
