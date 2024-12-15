@@ -46,6 +46,10 @@
 <body>
 	<div>
 		<h1>Meco敏感字查詢工具</h1>
+		<h3>@設計者：艾薇</h3>
+		<h3>資料庫需要大家提供敏感字才能擴充與維護：<a href="https://docs.google.com/spreadsheets/d/1xZIL633gJM2KgmbGzATWEU4uRzPZRgdT9kr5A4iMvGo/edit?usp=sharing">敏感字資料庫新增</a></h3>
+		<h4 style=color:red>注意：該工具提示字標示僅供參考</h4>
+		<div id="SensitveCount" style=font-size:20px></div>
   <div>
     <textarea id="input" placeholder="輸入文字..." rows="10" cols="50"></textarea>
     <button onclick="checkText()">執行</button>
@@ -75,6 +79,7 @@
           .filter(word => word); // 過濾空行
 
         console.log("敏感字資料庫載入成功，共有 " + sensitiveWords.length + " 條敏感字！");
+		SensitveCount.innerHTML = "【敏感字資料庫載入成功，共有 " + sensitiveWords.length + " 條敏感字！】";
       } catch (error) {
         console.error("錯誤：", error);
       }
